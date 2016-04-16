@@ -1,0 +1,32 @@
+{
+  "name": "proxyevable",
+  "version": "0.0.1",
+  "description": "object change tracker based on ES6 proxies",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava",
+    "tdd": "ava -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/capaj/proxyevable.git"
+  },
+  "keywords": [
+    "proxy",
+    "proxies",
+    "observable",
+    "state"
+  ],
+  "author": "capajj@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/capaj/proxyevable/issues"
+  },
+  "homepage": "https://github.com/capaj/proxyevable#readme",
+  "devDependencies": {
+    "ava": "^0.14.0"
+  },
+  "dependencies": {
+    "lodash": "^4.11.1"
+  }
+}
