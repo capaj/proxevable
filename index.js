@@ -47,7 +47,6 @@ const api = {
           _.forEach(updateCbs, (callback) => {
             callback(change)
           })
-          console.log(sKey)
           if (thisSubscriptions[sKey]) {
             thisSubscriptions[sKey].forEach((callback) => {
               autorunFn = callback
