@@ -1,38 +1,42 @@
 import test from 'ava'
-import {observable, observe} from '../index'
+import {observable, observe, preObserve} from '../index'
 
 test('pick up setting a property', t => {
-  t.plan(3)
+  t.plan(2)
   const a = observable({})
   observe(a, (change) => {
-    if (change.type === 'preupdate') {
-      t.deepEqual(change, {type: 'preupdate', name: 'b', oldValue: undefined, value: 1})
-    } else if (change.type === 'update') {
-      t.deepEqual(change, {type: 'update', name: 'b', oldValue: undefined, value: 1})
-      t.pass()
-    }
+    t.deepEqual(change, {type: 'update', name: 'b', oldValue: undefined, value: 1})
+    t.pass()
   })
   a.b = 1
 })
 
 test('pick up deleting a property', t => {
-  t.plan(3)
+  t.plan(2)
   const a = observable({b: 1})
   observe(a, (change) => {
-    if (change.type === 'preupdate') {
-      t.deepEqual(change, {type: 'preupdate', name: 'b', oldValue: 1, value: undefined})
-    } else if (change.type === 'update') {
-      t.deepEqual(change, {type: 'update', name: 'b', oldValue: 1, value: undefined})
-      t.pass()
-    }
+    t.deepEqual(change, {type: 'update', name: 'b', oldValue: 1, value: undefined})
+    t.pass()
   })
   delete a.b
 })
 
-test('throwing in the observer stops the setter from setting the property', (t) => {
+test('throwing in the observer does not affect the property setting', (t) => {
   t.plan(2)
   const a = observable({})
   observe(a, (change) => {
+    throw new Error('something  wrong')
+  })
+  t.throws(() => {
+    a.b = 1
+  })
+  t.truthy(a.b === 1)
+})
+
+test('throwing in the preobserver stops the setter from setting the property', (t) => {
+  t.plan(2)
+  const a = observable({})
+  preObserve(a, (change) => {
     throw new Error('something  wrong')
   })
   t.throws(() => {
@@ -42,15 +46,11 @@ test('throwing in the observer stops the setter from setting the property', (t) 
 })
 
 test('work with arrays too', t => {
-  t.plan(3)
+  t.plan(2)
   const a = observable([])
   observe(a, (change) => {
-    if (change.type === 'preupdate') {
-      t.deepEqual(change, {type: 'preupdate', name: '0', oldValue: undefined, value: 1})
-    } else if (change.type === 'update') {
-      t.deepEqual(change, {type: 'update', name: '0', oldValue: undefined, value: 1})
-      t.pass()
-    }
+    t.deepEqual(change, {type: 'update', name: '0', oldValue: undefined, value: 1})
+    t.pass()
   })
   a[0] = 1
 })

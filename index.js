@@ -1,49 +1,76 @@
-const objs = new WeakMap()
+const allUpdateCbs = new WeakMap()
+const allPreUpdateCbs = new WeakMap()
+const subscriptions = new WeakMap()
+
 const _ = require('lodash')
+let autorunFn = null
 
 const api = {
   observable: (source) => {
-    const cbs = []
+    const updateCbs = []
+    const preUpdateCbs = []
+    const thisSubscriptions = {}
     const o = new Proxy(source, {
       get: function (oTarget, sKey) {
-        // _.forEach(cbs, (callback) => {
-        //   callback({
-        //
-        //   })
-        // })
+        if (autorunFn) {
+          if (!thisSubscriptions[sKey]) {
+            thisSubscriptions[sKey] = new Set()
+          }
+          const set = thisSubscriptions[sKey]
+          if (!set.has(autorunFn)) {
+            thisSubscriptions[sKey].add(autorunFn)
+            const localAutorunFn = autorunFn
+            autorunFn.$onDispose.push(() => {
+              thisSubscriptions[sKey].delete(localAutorunFn)
+              if (thisSubscriptions[sKey].size === 0) {
+                delete thisSubscriptions[sKey]
+              }
+            })
+          }
+        }
+
         return oTarget[sKey]
       },
       set: function (oTarget, sKey, vValue) {
-        const change = {
-          type: 'preupdate',
-          name: sKey,
-          oldValue: oTarget[sKey],
-          value: vValue
-        }
-        _.forEach(cbs, (callback) => {
-          callback(change)
-        })
+        if (oTarget[sKey] !== vValue) {
+          const change = {
+            type: 'update',
+            name: sKey,
+            oldValue: oTarget[sKey],
+            value: vValue
+          }
+          _.forEach(preUpdateCbs, (callback) => {
+            callback(change)
+          })
+          oTarget[sKey] = vValue
 
-        oTarget[sKey] = vValue
-        change.type = 'update'
-        _.forEach(cbs, (callback) => {
-          callback(change)
-        })
+          _.forEach(updateCbs, (callback) => {
+            callback(change)
+          })
+          console.log(sKey)
+          if (thisSubscriptions[sKey]) {
+            thisSubscriptions[sKey].forEach((callback) => {
+              autorunFn = callback
+              callback()
+            })
+          }
+          autorunFn = null
+          return vValue
+        }
         return vValue
       },
       deleteProperty: function (oTarget, sKey) {
         const change = {
-          type: 'preupdate',
+          type: 'update',
           name: sKey,
           oldValue: oTarget[sKey],
           value: undefined
         }
-        _.forEach(cbs, (callback) => {
+        _.forEach(preUpdateCbs, (callback) => {
           callback(change)
         })
         const deleted = delete oTarget[sKey]
-        change.type = 'update'
-        _.forEach(cbs, (callback) => {
+        _.forEach(updateCbs, (callback) => {
           callback(change)
         })
         return deleted
@@ -52,17 +79,38 @@ const api = {
         return Object.keys(oTarget)
       }
     })
-    objs.set(o, cbs)
+    allUpdateCbs.set(o, updateCbs)
+    allPreUpdateCbs.set(o, preUpdateCbs)
+    subscriptions.set(o, thisSubscriptions)
     return o
   },
   observe: (o, cb) => {
-    const cbs = objs.get(o)
-    if (!cbs) {
+    const updateCbs = allUpdateCbs.get(o)
+    if (!updateCbs) {
       throw new Error('Object is not an observable')
     }
-    cbs.push(cb)
+    updateCbs.push(cb)
     return () => {
-      cbs.splice(cbs.indexOf(cb), 1)
+      updateCbs.splice(updateCbs.indexOf(cb), 1)
+    }
+  },
+  preObserve: (o, cb) => {
+    const preUpdateCbs = allPreUpdateCbs.get(o)
+    if (!preUpdateCbs) {
+      throw new Error('Object is not an observable')
+    }
+    preUpdateCbs.push(cb)
+    return () => {
+      preUpdateCbs.splice(preUpdateCbs.indexOf(cb), 1)
+    }
+  },
+  autorun: (fn) => {
+    fn.$onDispose = []
+    autorunFn = fn
+    fn()
+    autorunFn = null
+    return () => {
+      fn.$onDispose.forEach((cb) => cb())
     }
   }
 }
