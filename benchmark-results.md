@@ -1,6 +1,6 @@
-mobX create observable, autorun and dispose x 39,205 ops/sec ±5.73% (71 runs sampled)
+mobX create observable, autorun and dispose x 40,866 ops/sec ±3.94% (75 runs sampled)
 
-proxevable create observable, autorun and dispose x 76,322 ops/sec ±5.73% (73 runs sampled)
+proxevable create observable, autorun and dispose x 75,569 ops/sec ±5.37% (72 runs sampled)
 
 Fastest is proxevable create observable, autorun and dispose
 

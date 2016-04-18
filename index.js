@@ -4,6 +4,16 @@ const subscriptions = new WeakMap()
 
 const _ = require('lodash')
 let autorunFn = null
+const transactionStack = []
+const autorunsAfterTransaction = new Set()
+
+const transactionallyCall = (cb) => {
+  if (transactionStack.length > 0) {
+    autorunsAfterTransaction.add(cb)
+  } else {
+    cb()
+  }
+}
 
 const api = {
   observable: (source) => {
@@ -50,7 +60,7 @@ const api = {
           if (thisSubscriptions[sKey]) {
             thisSubscriptions[sKey].forEach((callback) => {
               autorunFn = callback
-              callback()
+              transactionallyCall(callback)
             })
           }
           autorunFn = null
@@ -110,6 +120,16 @@ const api = {
     autorunFn = null
     return () => {
       fn.$onDispose.forEach((cb) => cb())
+    }
+  },
+  transaction: (fn) => {
+    fn.toBeCalledAfter = new Set()
+    transactionStack.push(fn)
+    fn()
+    if (fn === transactionStack[0]) {
+      autorunsAfterTransaction.forEach((cb) => {
+        cb()
+      })
     }
   }
 }
