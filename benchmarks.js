@@ -7,7 +7,7 @@ const fs = require('fs')
 let benchLog = ''
 const log = (text) => {
   console.log(text)
-  benchLog += text + '\n'
+  benchLog += text + '\n\n'
 }
 
 // add tests
