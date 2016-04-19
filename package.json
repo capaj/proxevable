@@ -1,6 +1,6 @@
 {
   "name": "proxevable",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "object change tracker based on ES6 proxies",
   "main": "index.js",
   "scripts": {
