@@ -65,7 +65,7 @@ const api = {
             type: 'update',
             name: sKey,
             oldValue: oTarget[sKey],
-            value: vValue
+            newValue: vValue
           }
           _.forEach(preUpdateCbs, (callback) => {
             callback(change)
@@ -91,7 +91,7 @@ const api = {
           type: 'update',
           name: sKey,
           oldValue: oTarget[sKey],
-          value: undefined
+          newValue: undefined
         }
         _.forEach(preUpdateCbs, (callback) => {
           callback(change)

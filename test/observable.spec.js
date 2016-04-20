@@ -5,7 +5,7 @@ test('pick up setting a property', (t) => {
   t.plan(2)
   const a = observable({})
   observe(a, (change) => {
-    t.deepEqual(change, {type: 'update', name: 'b', oldValue: undefined, value: 1})
+    t.deepEqual(change, {type: 'update', name: 'b', oldValue: undefined, newValue: 1})
     t.pass()
   })
   a.b = 1
@@ -15,7 +15,7 @@ test('pick up deleting a property', (t) => {
   t.plan(2)
   const a = observable({b: 1})
   observe(a, (change) => {
-    t.deepEqual(change, {type: 'update', name: 'b', oldValue: 1, value: undefined})
+    t.deepEqual(change, {type: 'update', name: 'b', oldValue: 1, newValue: undefined})
     t.pass()
   })
   delete a.b
@@ -49,7 +49,7 @@ test('work with arrays too', (t) => {
   t.plan(2)
   const a = observable([])
   observe(a, (change) => {
-    t.deepEqual(change, {type: 'update', name: '0', oldValue: undefined, value: 1})
+    t.deepEqual(change, {type: 'update', name: '0', oldValue: undefined, newValue: 1})
     t.pass()
   })
   a[0] = 1
