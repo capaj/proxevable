@@ -1,7 +1,7 @@
 import test from 'ava'
 import {observable, observe, preObserve} from '../index'
 
-test('pick up setting a property', t => {
+test('pick up setting a property', (t) => {
   t.plan(2)
   const a = observable({})
   observe(a, (change) => {
@@ -11,7 +11,7 @@ test('pick up setting a property', t => {
   a.b = 1
 })
 
-test('pick up deleting a property', t => {
+test('pick up deleting a property', (t) => {
   t.plan(2)
   const a = observable({b: 1})
   observe(a, (change) => {
@@ -45,7 +45,7 @@ test('throwing in the preobserver stops the setter from setting the property', (
   t.truthy(a.b === undefined)
 })
 
-test('work with arrays too', t => {
+test('work with arrays too', (t) => {
   t.plan(2)
   const a = observable([])
   observe(a, (change) => {

@@ -1,7 +1,7 @@
 import test from 'ava'
 import {observable, autorun, transaction} from '../index'
 
-test('transaction batches', t => {
+test('transaction batches', (t) => {
   let c = 0
   const a = observable({g: 0})
   autorun(() => {

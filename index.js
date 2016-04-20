@@ -10,8 +10,26 @@ const autorunsAfterTransaction = new Set()
 const transactionallyCall = (cb) => {
   if (transactionStack.length > 0) {
     autorunsAfterTransaction.add(cb)
+  } else if (cb.minimumDelay > 0) {
+    if (cb.timeoutId) {
+      clearTimeout(cb.timeoutId)
+    }
+    cb.timeoutId = setTimeout(() => {
+      cb()
+      cb.timeoutId = null
+    }, cb.minimumDelay)
   } else {
     cb()
+  }
+}
+
+const autorun = (fn) => {
+  fn.$onDispose = []
+  autorunFn = fn
+  fn()
+  autorunFn = null
+  return () => {
+    fn.$onDispose.forEach((cb) => cb())
   }
 }
 
@@ -82,6 +100,12 @@ const api = {
         _.forEach(updateCbs, (callback) => {
           callback(change)
         })
+        if (thisSubscriptions[sKey]) {
+          thisSubscriptions[sKey].forEach((callback) => {
+            autorunFn = callback
+            transactionallyCall(callback)
+          })
+        }
         return deleted
       },
       enumerate: function (oTarget, sKey) {
@@ -113,23 +137,19 @@ const api = {
       preUpdateCbs.splice(preUpdateCbs.indexOf(cb), 1)
     }
   },
-  autorun: (fn) => {
-    fn.$onDispose = []
-    autorunFn = fn
-    fn()
-    autorunFn = null
-    return () => {
-      fn.$onDispose.forEach((cb) => cb())
-    }
+  autorun: autorun,
+  autorunAsync: (fn, delay) => {
+    fn.minimumDelay = delay
+    return autorun(fn)
   },
   transaction: (fn) => {
-    fn.toBeCalledAfter = new Set()
     transactionStack.push(fn)
     fn()
     if (fn === transactionStack[0]) {
       autorunsAfterTransaction.forEach((cb) => {
         cb()
       })
+      transactionStack.length = 0
     }
   }
 }
