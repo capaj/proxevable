@@ -82,9 +82,9 @@ const api = {
             })
           }
           autorunFn = null
-          return vValue
+          return true
         }
-        return vValue
+        return true
       },
       deleteProperty: function (oTarget, sKey) {
         const change = {

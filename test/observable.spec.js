@@ -21,6 +21,23 @@ test('pick up deleting a property', (t) => {
   delete a.b
 })
 
+test('array push', (t) => {
+  const a = observable([])
+  const disposer = observe(a, (change) => {
+    t.deepEqual(change, {type: 'update', name: '0', oldValue: undefined, newValue: 1})
+  })
+  a.push(1)
+  disposer()
+  observe(a, (change) => {
+    if (change.name === '0') {
+      t.deepEqual(change, {type: 'update', name: '0', oldValue: 1, newValue: undefined})
+    } else {
+      t.deepEqual(change, {type: 'update', name: 'length', oldValue: 1, newValue: 0})
+    }
+  })
+  a.splice(0, 1)
+})
+
 test('throwing in the observer does not affect the property setting', (t) => {
   t.plan(2)
   const a = observable({})
