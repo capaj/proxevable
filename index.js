@@ -8,8 +8,16 @@ const transactionStack = []
 const autorunsAfterTransaction = new Set()
 
 const transactionallyCall = (cb) => {
-  if (transactionStack.length > 0 || cb.minimumDelay > 0) {
+  if (transactionStack.length > 0) {
     autorunsAfterTransaction.add(cb)
+  } else if (cb.minimumDelay > 0) {
+    if (cb.timeoutId) {
+      clearTimeout(cb.timeoutId)
+    }
+    cb.timeoutId = setTimeout(() => {
+      cb()
+      cb.timeoutId = null
+    }, cb.minimumDelay)
   } else {
     cb()
   }
@@ -139,12 +147,9 @@ const api = {
     fn()
     if (fn === transactionStack[0]) {
       autorunsAfterTransaction.forEach((cb) => {
-        if (cb.minimumDelay > 0) {
-          setTimeout(cb, cb.minimumDelay)
-        } else {
-          cb()
-        }
+        cb()
       })
+      transactionStack.length = 0
     }
   }
 }

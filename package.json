@@ -1,9 +1,11 @@
 {
   "name": "proxevable",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "object change tracker based on ES6 proxies",
   "main": "index.js",
   "scripts": {
+    "pretest": "standard",
+    "precommit": "npm test",
     "test": "ava",
     "tdd": "ava -w"
   },
@@ -29,7 +31,9 @@
   "devDependencies": {
     "ava": "^0.14.0",
     "benchmark": "^2.1.0",
-    "mobx": "^2.1.3"
+    "husky": "^0.11.4",
+    "mobx": "^2.1.3",
+    "standard": "^6.0.8"
   },
   "dependencies": {
     "lodash": "^4.11.1"
