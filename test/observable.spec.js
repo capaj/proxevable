@@ -85,4 +85,5 @@ test('unobserve', (t) => {
   })
   unobserve()
   a.b = 1
+  t.true(true)
 })

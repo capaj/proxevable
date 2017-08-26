@@ -29,11 +29,11 @@
   },
   "homepage": "https://github.com/capaj/proxevable#readme",
   "devDependencies": {
-    "ava": "^0.14.0",
-    "benchmark": "^2.1.0",
-    "husky": "^0.11.4",
-    "mobx": "^2.1.6",
-    "standard": "^7.0.1"
+    "ava": "^0.22.0",
+    "benchmark": "^2.1.4",
+    "husky": "^0.14.3",
+    "mobx": "^3.2.2",
+    "standard": "^10.0.3"
   },
   "dependencies": {}
 }
