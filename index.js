@@ -2,7 +2,6 @@ const allUpdateCbs = new WeakMap()
 const allPreUpdateCbs = new WeakMap()
 const subscriptions = new WeakMap()
 
-const _ = require('lodash')
 let autorunFn = null
 const transactionStack = []
 const autorunsAfterTransaction = new Set()
@@ -67,12 +66,12 @@ const api = {
             oldValue: oTarget[sKey],
             newValue: vValue
           }
-          _.forEach(preUpdateCbs, (callback) => {
+          preUpdateCbs.forEach((callback) => {
             callback(change)
           })
           oTarget[sKey] = vValue
 
-          _.forEach(updateCbs, (callback) => {
+          updateCbs.forEach((callback) => {
             callback(change)
           })
           if (thisSubscriptions[sKey]) {
@@ -93,11 +92,11 @@ const api = {
           oldValue: oTarget[sKey],
           newValue: undefined
         }
-        _.forEach(preUpdateCbs, (callback) => {
+        preUpdateCbs.forEach((callback) => {
           callback(change)
         })
         const deleted = delete oTarget[sKey]
-        _.forEach(updateCbs, (callback) => {
+        updateCbs.forEach((callback) => {
           callback(change)
         })
         if (thisSubscriptions[sKey]) {
