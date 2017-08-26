@@ -70,7 +70,7 @@ function arraySuite () {
 
 // add tests
 suite.add('mobX create observable, autorun and dispose', function () {
-  let c = 0
+  let c = 0 // eslint-disable-line 
   const a = mobx.observable({g: 0})
   const disposer = mobx.autorun(() => {
     const ident = (v) => v
@@ -85,7 +85,7 @@ suite.add('mobX create observable, autorun and dispose', function () {
   a.g = 4
 })
   .add('proxevable create observable, autorun and dispose', function () {
-    let c = 0
+    let c = 0 // eslint-disable-line 
     const a = proxevable.observable({})
     const disposer = proxevable.autorun(() => {
       const ident = (v) => v
