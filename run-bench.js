@@ -1,5 +1,5 @@
 'use strict'
-var Benchmark = require('benchmark')
+const Benchmark = require('benchmark')
 const mobx = require('mobx')
 const proxevable = require('./index')
 const suite = new Benchmark.Suite()
@@ -16,10 +16,15 @@ function arraySuite () {
     const a = mobx.observable([])
     const disposer = mobx.autorun(() => {
       const ident = (v) => v
-      ident(a.length)
-      ident(a[0])
-      ident(a[1])
-      ident(a[2])
+      if (a.length > 0) {
+        ident(a[0])
+      }
+      if (a.length > 1) {
+        ident(a[1])
+      }
+      if (a.length > 2) {
+        ident(a[2])
+      }
     })
     a.push(1)
     a.push(2)
@@ -37,10 +42,17 @@ function arraySuite () {
     const a = proxevable.observable([])
     const disposer = proxevable.autorun(() => {
       const ident = (v) => v
-      ident(a.length)
-      ident(a[0])
-      ident(a[1])
-      ident(a[2])
+      if (a.length) {
+        if (a.length > 0) {
+          ident(a[0])
+        }
+        if (a.length > 1) {
+          ident(a[1])
+        }
+        if (a.length > 2) {
+          ident(a[2])
+        }
+      }
     })
     a.push(1)
     a.push(2)
