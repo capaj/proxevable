@@ -1,6 +1,6 @@
 {
   "name": "proxevable",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "object change tracker based on ES6 proxies",
   "main": "dist/index.js",
   "module": "src/index.js",
@@ -20,7 +20,8 @@
     "node": ">=6.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "keywords": [
     "proxy",
