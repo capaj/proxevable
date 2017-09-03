@@ -2,12 +2,14 @@
   "name": "proxevable",
   "version": "0.0.5",
   "description": "object change tracker based on ES6 proxies",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "src/index.js",
   "scripts": {
     "pretest": "standard",
     "precommit": "npm test",
     "test": "ava",
-    "tdd": "ava -w"
+    "tdd": "ava -w",
+    "prepublishOnly": "babel src/ -d dist/"
   },
   "repository": {
     "type": "git",
@@ -30,10 +32,15 @@
   "homepage": "https://github.com/capaj/proxevable#readme",
   "devDependencies": {
     "ava": "^0.22.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
     "husky": "^0.14.3",
     "mobx": "^3.2.2",
     "standard": "^10.0.3"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "ava": {
+		"require": ["babel-register"]
+	}
 }

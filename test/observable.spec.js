@@ -1,5 +1,5 @@
 import test from 'ava'
-import {observable, observe, preObserve} from '../index'
+import {observable, observe, preObserve} from '../src/index'
 
 test('pick up setting a property', (t) => {
   t.plan(2)
