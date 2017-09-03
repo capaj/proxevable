@@ -1,5 +1,5 @@
 import test from 'ava'
-import {observable, autorun, autorunAsync} from '../index'
+import {observable, autorun, autorunAsync} from '../src/index'
 
 test('autorun on any change in the observable and dispose properly', (t) => {
   let c = 0
